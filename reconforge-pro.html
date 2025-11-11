@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <title>ReconForge Pro - Advanced Reconnaissance Toolkit</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #00ff88;
+            --secondary: #00d4aa;
+            --accent: #00ffaa;
+            --dark: #0a0e1a;
+            --darker: #050810;
+            --card: #0f1419;
+            --border: #1a2332;
+            --text: #e0e8f0;
+            --text-muted: #8b9db5;
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --danger: #ff4444;
+            --info: #00aaff;
+            --font-primary: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 212, 170, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundPulse 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            background: rgba(15, 20, 25, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--darker);
+            font-weight: 800;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Quick Access Bar */
+        .quick-access {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .domain-input-wrapper {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .domain-input {
+            width: 100%;
+            background: var(--darker);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 0.875rem 1rem 0.875rem 2.5rem;
+            color: var(--text);
+            font-size: 1rem;
+            font-family: var(--font-mono);
+            transition: all 0.3s ease;
+        }
+
+        .domain-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .domain-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--darker);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            border-color: var(--primary);
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: var(--card);
+            padding: 0.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--darker);
+            font-weight: 600;
+        }
+
+        .tab:hover:not(.active) {
+            background: var(--darker);
+            color: var(--text);
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tool-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.15);
+        }
+
+        .tool-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tool-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 212, 170, 0.2));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .tool-title {
+            flex: 1;
+        }
+
+        .tool-title h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .tool-title p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .tool-count {
+            background: var(--darker);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tool-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .tool-actions::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tool-actions::-webkit-scrollbar-track {
+            background: var(--darker);
+            border-radius: 3px;
+        }
+
+        .tool-actions::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .tool-btn {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--darker);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tool-btn:hover {
+            background: var(--border);
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .tool-btn-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tool-btn-icon {
+            color: var(--primary);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .tool-btn:hover .tool-btn-icon {
+            opacity: 1;
+        }
+
+        /* Search and Filter */
+        .search-filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 200px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 212, 170, 0.2));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .stat-info h4 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-access {
+                flex-direction: column;
+            }
+            
+            .domain-input-wrapper {
+                min-width: 100%;
+            }
+        }
+
+        /* Hidden class for category switching */
+        .category-content {
+            display: none;
+        }
+
+        .category-content.active {
+            display: block;
+        }
+
+        /* Loading animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="logo-section">
+            <div class="logo-icon">RF</div>
+            <div class="logo-text">ReconForge Pro</div>
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Classic View
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Quick Access Bar -->
+        <div class="quick-access">
+            <div class="domain-input-wrapper">
+                <i class="fas fa-globe input-icon"></i>
+                <input type="text" 
+                       id="targetDomain" 
+                       class="domain-input" 
+                       placeholder="Enter target domain (e.g., example.com)"
+                       autocomplete="off">
+            </div>
+            <div class="quick-actions">
+                <button class="btn btn-primary" onclick="focusDomain()">
+                    <i class="fas fa-search"></i> Focus
+                </button>
+                <button class="btn btn-secondary" onclick="clearDomain()">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-tools"></i></div>
+                <div class="stat-info">
+                    <h4 id="totalTools">200+</h4>
+                    <p>Total Tools</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                <div class="stat-info">
+                    <h4 id="totalCategories">20+</h4>
+                    <p>Categories</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+                <div class="stat-info">
+                    <h4 id="activeTools">0</h4>
+                    <p>Active Searches</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="search-filter-bar">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       id="searchTools" 
+                       class="search-input" 
+                       placeholder="Search tools and dorks..."
+                       onkeyup="filterTools()">
+            </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="category-tabs" id="categoryTabs">
+            <!-- Tabs will be generated by JavaScript -->
+        </div>
+
+        <!-- Tools Grid -->
+        <div id="toolsContainer">
+            <!-- Tools will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 <strong>ReconForge Pro</strong> | Developed by <a href="#">Kaustubh Saraf</a></p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">For ethical security testing and authorized reconnaissance only</p>
+    </footer>
+
+    <script>
+        // Tool Categories and Tools Data
+        const toolsData = {
+            'Subdomain Enumeration': {
+                icon: 'fa-sitemap',
+                tools: [
+                    { name: 'crt.sh', url: 'https://crt.sh/?q=%.{domain}' },
+                    { name: 'SecurityTrails', url: 'https://securitytrails.com/list/apex_domain/{domain}' },
+                    { name: 'Shodan', url: 'https://www.shodan.io/search?query={domain}' },
+                    { name: 'Censys', url: 'https://search.censys.io/search?resource=hosts&q={domain}' },
+                    { name: 'DNSdumpster', url: 'https://dnsdumpster.com/?target={domain}' },
+                    { name: 'VirusTotal', url: 'https://www.virustotal.com/gui/domain/{domain}/relations' },
+                    { name: 'Google Wildcard', url: 'https://google.com/search?q=site:*.{domain}' },
+                    { name: 'Bing Domain', url: 'https://www.bing.com/search?q=domain:{domain}' },
+                    { name: 'Netcraft', url: 'https://sitereport.netcraft.com/?url={domain}' },
+                    { name: 'HackerTarget', url: 'https://hackertarget.com/subdomain-finder/?domain={domain}' },
+                    { name: 'viewdns.info', url: 'https://viewdns.info/reverseip/?host={domain}&t=1' },
+                    { name: 'Web Archive', url: 'https://web.archive.org/cdx/search/cdx?url=*.{domain}/*&collapse=urlkey&output=text&fl=original' }
+                ]
+            },
+            'Secret Discovery': {
+                icon: 'fa-key',
+                tools: [
+                    { name: 'Web Archive Sensitive Files', url: 'https://web.archive.org/cdx/search/cdx?url=*.{domain}/*&collapse=urlkey&output=text&fl=original&filter=original:.*\\.(env|key|pem|config|secret)' },
+                    { name: 'GitHub Gists API Keys', url: 'https://gist.github.com/search?q={domain}+apikey&type=gists' },
+                    { name: 'Config Secrets', dork: 'site:{domain} (password OR secret OR credential OR token OR apikey) ext:env OR ext:yml OR ext:yaml' },
+                    { name: 'Development Secrets', dork: 'site:{domain} inurl:jenkins OR inurl:.git OR inurl:.env OR inurl:id_rsa' },
+                    { name: 'Authorization Tokens', dork: 'site:{domain} (authorization:Bearer OR authorization:Basic OR authorization:AWS) ext:log' },
+                    { name: '.ENV Files', url: 'https://web.archive.org/cdx/search/cdx?url=*.{domain}/*&collapse=urlkey&output=text&fl=original&filter=original:.*\\.env$' },
+                    { name: 'SSL Certificate CN', url: 'https://www.shodan.io/search?query=Ssl.cert.subject.CN:%22{domain}%22+200' },
+                    { name: 'JS Files', url: 'https://web.archive.org/cdx/search/cdx?url=*.{domain}/*&collapse=urlkey&output=text&fl=original&filter=original:.*\\.js$' }
+                ]
+            },
+            'Passive Reconnaissance': {
+                icon: 'fa-search',
+                tools: [
+                    { name: 'WHOIS Lookup', url: 'https://whois.domaintools.com/{domain}' },
+                    { name: 'DNS Information', url: 'https://dnsdumpster.com/?q={domain}' },
+                    { name: 'SSL Certificate Info', url: 'https://www.ssllabs.com/ssltest/analyze.html?d={domain}' },
+                    { name: 'Reverse IP Lookup', url: 'https://viewdns.info/reverseip/?host={domain}&t=1' },
+                    { name: 'ASN Lookup', url: 'https://bgp.he.net/search?search%5Bsearch%5D={domain}&commit=Search' },
+                    { name: 'Robots.txt', url: 'https://{domain}/robots.txt' },
+                    { name: 'VirusTotal URLs', url: 'https://www.virustotal.com/gui/domain/{domain}/urls' }
+                ]
+            },
+            'Technology Detection': {
+                icon: 'fa-code',
+                tools: [
+                    { name: 'BuiltWith', url: 'https://builtwith.com/{domain}' },
+                    { name: 'W3Techs', url: 'https://w3techs.com/sites/info/{domain}' },
+                    { name: 'WhatCMS', url: 'https://whatcms.org/?s={domain}' },
+                    { name: 'WebTechSurvey', url: 'https://webtechsurvey.com/website/{domain}' }
+                ]
+            },
+            'Port Scanning': {
+                icon: 'fa-network-wired',
+                tools: [
+                    { name: 'viewdns.info', url: 'https://viewdns.info/portscan/?host={domain}' },
+                    { name: 'DNS Checker', url: 'https://dnschecker.org/port-scanner.php?query={domain}&ptype=server' },
+                    { name: 'Web Check', url: 'https://web-check.xyz/check/{domain}' }
+                ]
+            },
+            'URL Collection': {
+                icon: 'fa-link',
+                tools: [
+                    { name: 'Web Archive', url: 'https://web.archive.org/cdx/search/cdx?url=*.{domain}/*&output=txt&collapse=urlkey&fl=original' },
+                    { name: 'urlscan.io', url: 'https://urlscan.io/api/v1/search/?q={domain}&size=10000' },
+                    { name: 'AlienVault OTX', url: 'https://otx.alienvault.com/api/v1/indicators/hostname/{domain}/url_list?limit=500&page=1' }
+                ]
+            },
+            'GitHub Dorking': {
+                icon: 'fa-github',
+                tools: [
+                    { name: 'GitLab Search', dork: 'inurl:gitlab {domain}' },
+                    { name: '.git Exposure', dork: 'site:{domain}/.git/' },
+                    { name: 'API Keys', url: 'https://github.com/search?q=%27API_KEY%27+OR+%27api_key%27+{domain}&type=code' },
+                    { name: 'filename:.env', url: 'https://github.com/search?q=filename%3A.env+{domain}&type=code' },
+                    { name: 'Passwords/Secrets', url: 'https://github.com/search?q=%27password%27+OR+%27secret%27+{domain}&type=code' },
+                    { name: 'Tokens', url: 'https://github.com/search?q=%22token%22+OR+%22access_token%22+{domain}&type=code' },
+                    { name: 'Config Files', url: 'https://github.com/search?q=filename%3Aconfig+filename%3Asettings+{domain}&type=code' }
+                ]
+            },
+            'CVE Search': {
+                icon: 'fa-shield-alt',
+                tools: [
+                    { name: 'MITRE CVE', url: 'https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword={cve}' },
+                    { name: 'Exploit-DB', url: 'https://www.exploit-db.com/search?cve={cve}' },
+                    { name: '0day.today', url: 'https://0day.today/search?search_request={cve}' },
+                    { name: 'CISA', url: 'https://www.cisa.gov/search?g={cve}' },
+                    { name: 'RedHat', url: 'https://access.redhat.com/security/security-updates/cve?q={cve}' },
+                    { name: 'PacketStorm', url: 'https://packetstormsecurity.com/search/?q={cve}' },
+                    { name: 'GitHub CVE', url: 'https://github.com/search?q=cve+{cve}&type=code' }
+                ]
+            },
+            'Parameter Finder': {
+                icon: 'fa-search',
+                tools: [
+                    { name: 'SQLi Parameters (51)', dork: 'site:{domain} inurl:cat= | inurl:search= | inurl:action= | inurl:page= | inurl:id=' },
+                    { name: 'SQLi Parameters (68)', dork: 'site:{domain} inurl:doc= | inurl:code= | inurl:data= | inurl:view= | inurl:user=' },
+                    { name: 'Error SQLIs (71)', dork: 'site:{domain} intext:Syntax error | intext:Database Error | intext:MySQL | intext:ORA-' },
+                    { name: 'Open Redirects (41)', dork: 'site:{domain} inurl:redir= | inurl:url= | inurl:redirect= | inurl:return=' },
+                    { name: 'SSRF Params (24)', dork: 'site:{domain} inurl:redir | inurl:url= | inurl:redirect= | inurl:dest=' },
+                    { name: 'RCE Params (23)', dork: 'site:{domain} inurl:cmd= | inurl:exec= | inurl:command= | inurl:execute=' },
+                    { name: 'XSS Params (27)', dork: 'site:{domain} inurl:q= | inurl:s= | inurl:search= | inurl:query=' },
+                    { name: 'LFI Params (24)', dork: 'site:{domain} inurl:cat= | inurl:dir= | inurl:file= | inurl:path=' }
+                ]
+            },
+            'Information Disclosure': {
+                icon: 'fa-file-alt',
+                tools: [
+                    { name: 'Directory Listing', dork: 'site:{domain} intitle:index.of' },
+                    { name: 'Exposed FTP', dork: 'site:{domain} inurl:ftp intitle:index of' },
+                    { name: 'PDF Files', dork: 'site:{domain} filetype:pdf' },
+                    { name: 'Config Files', dork: 'site:{domain} ext:xml | ext:conf | ext:cnf | ext:ini' },
+                    { name: 'Exposed Databases', dork: 'site:{domain} ext:sql | ext:dbf | ext:mdb' },
+                    { name: 'Backup Files', dork: 'site:{domain} ext:bkf | ext:bkp | ext:bak | ext:old' },
+                    { name: 'Log Files', dork: 'site:{domain} ext:log' },
+                    { name: 'Find Emails', dork: 'site:{domain} inurl:email | inurl:emails ext:txt | ext:xlsx' },
+                    { name: 'Find Passwords', dork: 'site:{domain} intext:admin.password' },
+                    { name: 'Cloud Credentials', dork: 'site:{domain} (aws_access_key_id OR aws_secret_access_key) filetype:json' },
+                    { name: 'S3 Buckets', dork: 'site:.s3.amazonaws.com {domain}' },
+                    { name: 'Login/Admin Pages', dork: 'site:{domain} inurl:login | inurl:admin | inurl:portal' }
+                ]
+            },
+            'Mobile App Scanning': {
+                icon: 'fa-mobile-alt',
+                tools: [
+                    { name: 'MobSF (Mobile Security Framework)', url: 'https://mobsf.live/', note: 'Open-source SAST/DAST for Android/iOS apps' },
+                    { name: 'VirusTotal File Upload', url: 'https://www.virustotal.com/gui/home/upload', note: 'Upload APK/IPA for malware analysis' },
+                    { name: 'BeVigil Security Search', url: 'https://bevigil.com/search?query={domain}', note: 'Security search engine for mobile apps' },
+                    { name: 'ImmuniWeb Mobile Test', url: 'https://www.immuniweb.com/mobile/', note: 'OWASP Mobile Top 10 security checks' },
+                    { name: 'Quixxi Vulnerability Scanner', url: 'https://www.quixxi.com/vulnerability-test/', note: 'Android & iOS vulnerability scanner' },
+                    { name: 'AppSweep', url: 'https://appsweep.guardsquare.com/', note: 'Free APK/AAB/AAR security scanner' },
+                    { name: 'Appknox', url: 'https://www.appknox.com/', note: 'Enterprise mobile app security testing' },
+                    { name: 'OWASP ZAP', url: 'https://www.zaproxy.org/', note: 'Web/API security testing' }
+                ]
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            generateCategoryTabs();
+            generateTools();
+            updateStats();
+        });
+
+        // Generate Category Tabs
+        function generateCategoryTabs() {
+            const tabsContainer = document.getElementById('categoryTabs');
+            const categories = Object.keys(toolsData);
+            
+            categories.forEach((category, index) => {
+                const tab = document.createElement('button');
+                tab.className = `tab ${index === 0 ? 'active' : ''}`;
+                tab.textContent = category;
+                tab.onclick = () => switchCategory(category, tab);
+                tabsContainer.appendChild(tab);
+            });
+        }
+
+        // Switch Category
+        function switchCategory(category, activeTab) {
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            activeTab.classList.add('active');
+            
+            // Show category content
+            generateTools(category);
+        }
+
+        // Generate Tools
+        function generateTools(category = null) {
+            const container = document.getElementById('toolsContainer');
+            container.innerHTML = '';
+            
+            const categories = category ? [category] : Object.keys(toolsData);
+            
+            categories.forEach(cat => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = `category-content ${!category || categories.indexOf(cat) === 0 ? 'active' : ''}`;
+                
+                const tools = toolsData[cat];
+                const toolCard = createToolCard(cat, tools);
+                categoryDiv.appendChild(toolCard);
+                container.appendChild(categoryDiv);
+            });
+        }
+
+        // Create Tool Card
+        function createToolCard(category, tools) {
+            const card = document.createElement('div');
+            card.className = 'tool-card';
+            
+            card.innerHTML = `
+                <div class="tool-header">
+                    <div class="tool-icon">
+                        <i class="fas ${tools.icon}"></i>
+                    </div>
+                    <div class="tool-title">
+                        <h3>${category}</h3>
+                        <p>${tools.tools.length} tools available</p>
+                    </div>
+                    <div class="tool-count">${tools.tools.length}</div>
+                </div>
+                <div class="tool-actions">
+                    ${tools.tools.map(tool => `
+                        <button class="tool-btn" onclick="executeTool('${category}', '${tool.name.replace(/'/g, "\\'")}')" title="${tool.note || ''}">
+                            <span class="tool-btn-name">${tool.name}</span>
+                            <i class="fas fa-external-link-alt tool-btn-icon"></i>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Execute Tool
+        function executeTool(category, toolName) {
+            const domain = document.getElementById('targetDomain').value.trim();
+            
+            // Categories that don't require domain input
+            const noDomainCategories = ['CVE Search', 'Mobile App Scanning'];
+            
+            if (!domain && !noDomainCategories.includes(category)) {
+                alert('Please enter a target domain first!');
+                document.getElementById('targetDomain').focus();
+                return;
+            }
+            
+            const tools = toolsData[category].tools;
+            const tool = tools.find(t => t.name === toolName);
+            
+            if (!tool) return;
+            
+            let finalUrl = '';
+            
+            if (tool.url) {
+                // For Mobile App Scanning, some tools don't need domain replacement
+                if (category === 'Mobile App Scanning' && !tool.url.includes('{domain}')) {
+                    finalUrl = tool.url;
+                } else {
+                    finalUrl = tool.url.replace(/{domain}/g, domain || '').replace(/{cve}/g, domain || '');
+                }
+            } else if (tool.dork) {
+                const dork = tool.dork.replace(/{domain}/g, domain);
+                finalUrl = `https://www.google.com/search?q=${encodeURIComponent(dork)}`;
+            }
+            
+            if (finalUrl) {
+                window.open(finalUrl, '_blank');
+            }
+        }
+
+        // Filter Tools
+        function filterTools() {
+            const searchTerm = document.getElementById('searchTools').value.toLowerCase();
+            const toolCards = document.querySelectorAll('.tool-card');
+            
+            toolCards.forEach(card => {
+                const cardText = card.textContent.toLowerCase();
+                card.style.display = cardText.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        // Focus Domain Input
+        function focusDomain() {
+            document.getElementById('targetDomain').focus();
+        }
+
+        // Clear Domain
+        function clearDomain() {
+            document.getElementById('targetDomain').value = '';
+            document.getElementById('targetDomain').focus();
+        }
+
+        // Update Stats
+        function updateStats() {
+            let totalTools = 0;
+            Object.values(toolsData).forEach(category => {
+                totalTools += category.tools.length;
+            });
+            
+            document.getElementById('totalTools').textContent = totalTools + '+';
+            document.getElementById('totalCategories').textContent = Object.keys(toolsData).length + '+';
+        }
+
+        // Enter key support for domain input
+        document.getElementById('targetDomain').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                focusDomain();
+            }
+        });
+    </script>
+</body>
+</html>
+
